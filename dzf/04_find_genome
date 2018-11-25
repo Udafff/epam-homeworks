@@ -1,0 +1,2 @@
+# Find genom sting
+grep -o 'AGGTTTGGT' genome_file | wc -l

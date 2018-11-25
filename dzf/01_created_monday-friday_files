@@ -1,0 +1,4 @@
+# Copy Created files from current dir to ./new_files/ dir
+find ./ -newerct "$(date -d'last-sunday' +%F)" ! -newerct "$(date -d'last-monday+4 days' +%F)" -exec cp {} ./new_files/ \;
+# Copy Modified files from current dir to ./new_files/ dir
+find ./ -newermt "$(date -d'last-sunday' +%F)" ! -newermt "$(date -d'last-monday+4 days' +%F)" -exec cp {} ./new_files/ \;

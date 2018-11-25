@@ -1,0 +1,2 @@
+# Find number times of logged in student
+journalctl --no-pager -u systemd-logind | grep -c 'New session.*student'

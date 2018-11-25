@@ -1,0 +1,2 @@
+# Find symlinks
+find / -type l | wc -l
