@@ -1,0 +1,3 @@
+file:   dz1/dz1.sh	# Home work ACL (create dirs, users, set ACL)
+file:   dz1/check.sh	# Check dz1 (list projects dir, create user dir in projects, create user file in project)
+file:   dz1/clean.sh	# Clean homework from system (remove dirs, users)
