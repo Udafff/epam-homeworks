@@ -1,9 +1,11 @@
 import unittest
 from raises import raises
 
+
 class MyCustomException(Exception):
     """My custom exception message"""
     pass
+
 
 class TestRaisesDec(unittest.TestCase):
     def setUp(self):
