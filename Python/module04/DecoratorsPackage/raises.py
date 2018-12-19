@@ -11,3 +11,8 @@ def raises(decor_param):
                 raise decor_param
         return wrapper
     return decorator
+
+
+if __name__ == "__main__":
+    print('Message from raises decorator module!')
+    pass

@@ -8,8 +8,9 @@ class MyCustomException(Exception):
 
 
 class TestRaisesDec(unittest.TestCase):
+
     def setUp(self):
-        self.test_string = {"My shiny string",}
+        self.test_string = {"My shiny string"}
 
     def tearDown(self):
         pass
@@ -30,4 +31,4 @@ class TestRaisesDec(unittest.TestCase):
             return_str()
 
         except MyCustomException:
-            self.fail(msg="Raises exception in clean code. Shoud replace exception only if it occured.")
+            self.fail(msg="Raises exception in clean code. Should replace exception only if it occurred.")
