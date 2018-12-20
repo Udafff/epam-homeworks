@@ -29,6 +29,7 @@ class Vehicle:
     def set_deprication(cls, deprication):
         cls.deprication = deprication
 
+    # Create object from string
     @classmethod
     def from_str(cls, vehicle_str):
         return Vehicle(*vehicle_str.split("-"))
@@ -80,6 +81,8 @@ class HeavyVehicle(Vehicle):
     deprication = 0.99
     def work(self):
         print("Working hard...")
+
+
 
 
 my_vehicle = Vehicle('Toyota', 'Camry', 5000, 1995)

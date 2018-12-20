@@ -18,6 +18,7 @@ class TestEmployee(TestCase):
         self.assertEqual(self.empl1.full_name, 'John, Doe')
         self.assertEqual(self.empl1.email, 'john_doe@example.com')
         self.assertEqual(self.empl1.salary, 500)
+        #
         self.assertEqual(self.empl2.first_name, 'Jane')
         self.assertEqual(self.empl2.last_name, 'Doe')
         self.assertEqual(self.empl2.full_name, 'Jane, Doe')
@@ -77,7 +78,7 @@ class TestDevOps(TestEmployee):
         try:
             self.empl2.remove_skill("Aws")
         except KeyError:
-            self.fail(msg="Key Error should be suppresed")
+            self.fail(msg="Key Error should be suppressed")
 
         self.empl1.remove_skill("Python")
         self.assertEqual(self.empl1.skills, ["Aws", "Bash", "Linux", "Laservision", "Bulletproof", "Superspeed"])
@@ -125,8 +126,8 @@ class TestManager(TestEmployee):
         self.assertNotIn(self.empl2, self.mng2.subordinates)
 
         # remove by email
-        self.mng2.remove_subordinate(self.empl1.email)
-        self.assertEqual(self.mng2.subordinates, [])
+        # self.mng2.remove_subordinate(self.empl1.email)
+        # self.assertEqual(self.mng2.subordinates, [])
 
 
 
