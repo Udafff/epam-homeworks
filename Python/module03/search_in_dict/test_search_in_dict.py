@@ -10,9 +10,9 @@ class TestBetween(unittest.TestCase):
         # self.assertEqual(search_in_dict(["1", "2", "1000", "testStr"], haystack), {"1", "2", "1000"})
         # self.assertEqual(search_in_dict({"1", "2", "1000", "testStr"}, haystack), {"1", "2", "1000"})
 
-        haystack = {str(x): x * 2 for x in reversed(range(100))}
+        haystack = {str(x): x * 2 for x in reversed(range(10))}
         # self.assertEqual(search_in_dict(["1", "2", "10", "testStr"], haystack), {"1", "2", "10"})
-        self.assertEqual(search_in_dict({"1", "2", "10", "testStr"}, haystack), {"1", "2", "10"})
+        self.assertEqual(search_in_dict({"1", "2", "6", "testStr"}, haystack), {"1", "2", "6"})
 
         with self.assertRaises(TypeError):
             search_in_dict({"1", "2", "1000", {}}, haystack)
