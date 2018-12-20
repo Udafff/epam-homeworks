@@ -126,8 +126,8 @@ class TestManager(TestEmployee):
         self.assertNotIn(self.empl2, self.mng2.subordinates)
 
         # remove by email
-        # self.mng2.remove_subordinate(self.empl1.email)
-        # self.assertEqual(self.mng2.subordinates, [])
+        self.mng2.remove_subordinate(self.empl1.email)
+        self.assertEqual(self.mng2.subordinates, [])
 
 
 

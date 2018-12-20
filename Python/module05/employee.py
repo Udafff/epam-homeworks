@@ -27,7 +27,9 @@ class Employee:
     def full_name(self):
         return self.first_name + ', ' + self.last_name
 
+    # =====
     # === Should be refactored!!
+    # =====
     @full_name.setter
     def full_name(self, prm_empl_full_name_string):
         self.first_name, self.last_name = prm_empl_full_name_string.split(', ')
@@ -57,6 +59,8 @@ class DevOps(Employee):
 
 
 class Manager(Employee):
+    """ Manager class. Child of Employee parent class. It has an additional property which keeps subordinates """
+
     def __init__(self, prm_first_name, prm_last_name, prm_salary, prm_slaves=[]):
         super().__init__(prm_first_name, prm_last_name, prm_salary)
 
@@ -66,14 +70,27 @@ class Manager(Employee):
         self.subordinates.append(prm_slave)
         # self.subordinates = list(set(self.subordinates))
 
+    # =====
+    # === Should be refactored!!
+    # =====
     def remove_subordinate(self, prm_slave):
-        try:
-            self.subordinates.remove(prm_slave)
-        except ValueError as Err:
-            # print('ValueError exception!, Employee is not detected')
-            # print(Err)
-            pass
-
+        if not isinstance(prm_slave, str):
+            try:
+                self.subordinates.remove(prm_slave)
+            except ValueError as Err:
+                # print('ValueError exception!, Employee is not detected')
+                # print(Err)
+                pass
+        else:
+            try:
+                # print('Find by email:', prm_slave)
+                for slave in self.subordinates:
+                    if slave.email == prm_slave:
+                        # print('Worker for delletion', slave.full_name)
+                        self.subordinates.remove(slave)
+            except ValueError as Err:
+                # print('ValueError exception!', Err)
+                pass
 
 
 if __name__ == "__main__":
@@ -95,8 +112,9 @@ if __name__ == "__main__":
 
     employ_manager1.add_subordinate(employ1)
     employ_manager1.add_subordinate(employ2)
+    employ_manager1.add_subordinate(employ_devops1)
     employ_manager1.remove_subordinate(employ1)
-    print(employ_manager1.subordinates)
+    employ_manager1.remove_subordinate('john_doe@example.com')
 
 
 
