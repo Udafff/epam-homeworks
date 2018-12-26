@@ -13,6 +13,7 @@ class TestCsvParser(TestCase):
             self.csv_parser.save_as("new_test_file", '\t')
             self.assertTrue(os.path.exists("new_test_file"))
         finally:
+            pass
             os.remove("new_test_file")
 
     def test_sell_over(self):

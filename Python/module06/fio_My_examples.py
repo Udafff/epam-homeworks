@@ -103,10 +103,8 @@ class FioTestExample:
         with open(self.file) as f_handler:
             csv_dr = csv.DictReader(f_handler)
             for line in csv_dr:
-                # print(line)
-                print(line['Region'], '::', line['Item Type'])
-
-
+                print(line)
+                # print(line['Region'], '::', line['Item Type'])
 
 
 if __name__ == "__main__":
