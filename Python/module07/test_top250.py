@@ -8,7 +8,7 @@ import requests
 class TestParseTop250(TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.mock_data = open('mockImdb.html')
+        cls.mock_data = open('mockImdb.html', encoding='utf8')
 
     @classmethod
     def tearDownClass(cls):
@@ -21,14 +21,13 @@ class TestParseTop250(TestCase):
             mocked_get.return_value.ok = True
             mocked_get.return_value.text = self.mock_data
 
-            # parse_top_250("top250.json")
-            parse_top_250('123')
-            print('')
+            parse_top_250("top250.json")
+
             mocked_get.assert_called_with(link, headers={'Accept-Language': 'En-us'})
 
-            with open("top250.json") as result_json:
+            with open("top250.json", 'r', encoding='utf8') as result_json:
                 result_data: list = json.load(result_json)
-                print(result_data)
+
                 self.assertEqual(list(filter(lambda x: x.get("The Shawshank Redemption") is not None, result_data))[0],
                                  {"The Shawshank Redemption": {"Position": "1", "Year": "1994", "Director": "Frank Darabont",
                                   "Crew": "Tim Robbins, Morgan Freeman", "Rating": "9.2"}})
