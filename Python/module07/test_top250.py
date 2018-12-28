@@ -21,7 +21,9 @@ class TestParseTop250(TestCase):
             mocked_get.return_value.ok = True
             mocked_get.return_value.text = self.mock_data
 
-            parse_top_250("top250.json")
+            # parse_top_250("top250.json")
+            parse_top_250('123')
+            print('')
             mocked_get.assert_called_with(link, headers={'Accept-Language': 'En-us'})
 
             with open("top250.json") as result_json:
