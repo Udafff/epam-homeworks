@@ -2,15 +2,15 @@
     python ./tag_counter.py -h
     python ./tag_counter.py -m url 'https://yandex.ru'
     python ./tag_counter.py -m file html_file.html
-    python ./tag_counter.py -l file -m url 'https://yandex.ru'
-    python ./tag_counter.py -l aws -m url 'https://google.com'
+    python ./tag_counter.py --log-file counter.log -m url 'https://yandex.ru'
+    python ./tag_counter.py --log-aws epam-python-bucket -m url 'https://google.com'
 """
 import requests
 import sys
 from bs4 import BeautifulSoup
 import logging
 import argparse
-import boto3
+from BotoBucket import BotoBucket
 
 
 class TagCounter:
@@ -46,30 +46,43 @@ class TagCounter:
     def config_log(self,arg_log_params):
         """ Reconfigure logging """
         self.log = arg_log_params
+
         # Remove all handlers associated with the root logger object.
         for handler in logging.root.handlers[:]:
             logging.root.removeHandler(handler)
-        # Reconfigure logging with a file and write to log file.
-        logging.basicConfig(filename=arg_log_params[1], level=logging.INFO, format='%(asctime)s %(message)s')
-        if arg_log_params[0] == 'aws':
+
+        # Reconfigure logging to log file.
+        if arg_log_params[0] == 'file':
+            logging.basicConfig(filename=arg_log_params[1], level=logging.INFO, format='%(asctime)s %(message)s')
+        elif arg_log_params[0] == 'aws':
+            logging.basicConfig(filename='tag_counter_aws.log', level=logging.INFO, format='%(asctime)s %(message)s')
             logging.getLogger('botocore').setLevel(logging.ERROR)
 
     def write_log(self, arg_log_params):
         """ Get a list of params and write data to log:
             arg_log_params[0] - Type of log (file|aws or "Disabled")
-            arg_log_params[1] - Log filename
+            arg_log_params[1] - Log filename|bucket name.
             arg_log_params[2] - Html source (url|file|HtmlText)"""
-
         if arg_log_params[0] == 'file':
             logging.info(f'"{arg_log_params[2]}" {self.total_tags} {self.tags_dict}')
         elif arg_log_params[0] == 'aws':
-            s3 = boto3.resource('s3')
             logging.info(f'"{arg_log_params[2]}" {self.total_tags} {self.tags_dict}')
-            # aws uploading
-            if s3.Bucket('tag-counter') in s3.buckets.all():
-                s3.Bucket('tag-counter').upload_file(arg_log_params[1], arg_log_params[1])
+            cls_bb = BotoBucket()
+            if cls_bb.is_exist(arg_log_params[1]) is True:
+                # Check bucket name and upload
+                print(f'Upload "tag_counter_aws.log" log file to AWS bucket "{arg_log_params[1]}"')
+                cls_bb.s3_resource.Bucket(arg_log_params[1]).upload_file('tag_counter_aws.log', 'tag_counter_aws.log')
             else:
-                print(f'The specified bucket does not exist. Please create a bucket with name "tag-counter".')
+                print(f'Bucket name "{arg_log_params[1]}" is not exists. Create new bucket...')
+                bucket = cls_bb.create_bucket()
+                if bucket[0] is not False:
+                    print(f'Bucket "{bucket[1]}" successfully created.')
+                    print(f'Upload "tag_counter_aws.log" log file to AWS bucket "{bucket[1]}"')
+                    cls_bb.s3_resource.Bucket(bucket[1]).upload_file('tag_counter_aws.log', 'tag_counter_aws.log')
+                else:
+                    # Print returned exception response.
+                    print(bucket[1][2])
+                    print('Upload log file to AWS is failed...')
         else:
             print(f'Log destination: "{arg_log_params[0]}" is incorrect. It have to be "file" or "aws" or "Disabled".')
 
@@ -123,26 +136,31 @@ if __name__ == "__main__":
     parser.add_argument('source', metavar='SOURCE', help='Source of html data \
                         ("https://www.google.com", "html_file.html").')
     parser.add_argument('-m', help='Source mode [url|file].', choices=['url', 'file'], required=True)
-    parser.add_argument('-l', help='Enable logging.', choices=['file', 'aws'])
+    parser.add_argument('--log-aws', metavar='DEST', help='Enable logging. Copy log file to aws DEST bucket.')
+    parser.add_argument('--log-file', metavar='DEST', help='Enable logging. Write log to DEST file.')
     args = parser.parse_args()
 
     # Create class instance
     cls_count_tags = TagCounter()
 
     # Enable logging
-    if args.l == 'file':
-        cls_count_tags.config_log(['file', 'tag_counter_file.log'])
-    elif args.l == 'aws':
-        cls_count_tags.config_log(['aws', 'tag_counter_aws.log'])
+    if args.log_file:
+        print('Logging to FILE:', args.log_file)
+        cls_count_tags.config_log(['file', args.log_file])
+    elif args.log_aws:
+        print('Logging to AWS bucket:', args.log_aws)
+        cls_count_tags.config_log(['aws', args.log_aws])
 
     # Execute and print result
     if args.m == 'url':
         result = cls_count_tags.count('url', args.source)
+        print('\n#################### Result:')
         print(f'Source: {result[0]}\nTotal tags: {result[1]}')
         for tag in result[2].items():
             print(f'{tag[0]}:{tag[1]}')
     elif args.m == 'file':
         result = cls_count_tags.count('file', args.source)
+        print('\n#################### Result:')
         print(f'Source: {result[0]}\nTotal tags: {result[1]}')
         for tag in result[2].items():
             print(f'{tag[0]}:{tag[1]}')
