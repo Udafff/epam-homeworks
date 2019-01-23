@@ -46,7 +46,7 @@
 [servers]
 control ansible_ssh_host=10.156.0.8
 server01 ansible_ssh_host=10.156.0.9
-#server02 ansible_ssh_host=10.156.0.10
+server02 ansible_ssh_host=10.156.0.10
 
 [servers:vars]
 ansible_python_interpreter=/usr/bin/python3
